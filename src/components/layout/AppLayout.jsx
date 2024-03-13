@@ -34,9 +34,10 @@ const AppLayout = (WrappedComponent) => {
             />
           </Grid>
           <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"} ><WrappedComponent {...props} /></Grid>
-          <Grid item md={4} lg={3} height={"100vh"} sx={{
+          <Grid item md={4} lg={3} height={"91vh"} sx={{
             display: {
-              xs: "none", md: "block", padding: "2rem", backgroundColor: "rgba(0,0,0,0.85)"
+              xs: "none", md: "block", padding: "2rem", backgroundColor: "rgba(0,0,0,0.85)",
+              overflow:"auto",
             }
           }}>
             <Profile />

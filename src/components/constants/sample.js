@@ -25,7 +25,7 @@ export const sampleUsers = [
     },
     {
         avatar: ['https://images.pexels.com/photos/20440051/pexels-photo-20440051/free-photo-of-a-woman-leaning-against-a-railing-with-her-hand-on-her-chin.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'],
-        name: 'John Doe',
+        name: 'John boi',
         _id: "2",
     },
 ]
