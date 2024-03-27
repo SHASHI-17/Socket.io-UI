@@ -1,7 +1,13 @@
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
+import axios from 'axios'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute';
 import { LayoutLoader } from './components/layout/Loaders';
+import { server } from './lib/config';
+import { useDispatch, useSelector } from 'react-redux'
+import { userExists, userNotExists } from './redux/reducer/auth';
+import { Toaster } from 'react-hot-toast'
+import { SocketProvider } from '../Socket'
 
 
 const Home = lazy(() => import('./pages/home'));
@@ -18,19 +24,34 @@ const ChatManagement = lazy(() => import('./pages/admin/ChatManagement'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-let user = true;
-
 const App = () => {
-  return (
+
+  const { user, loader ,userExist} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    axios.get(`${server}/user/me`, { withCredentials: true })
+      .then(({ data }) => dispatch(userExists(data)))
+      .catch((err) => dispatch(userNotExists()));
+  }, [])
+
+
+  return loader ? <LayoutLoader /> : (
     <Router>
       <Suspense fallback={<LayoutLoader />}>
         <Routes>
-          <Route element={<ProtectedRoute user={user} />}>
+          <Route element={
+            <SocketProvider>
+              <ProtectedRoute user={user} />
+            </SocketProvider>
+          }
+          >
             <Route path='/' element={<Home />} />
             <Route path='/chat/:chatId' element={<Chat />} />
             <Route path='/groups' element={<Groups />} />
           </Route>
-          <Route path='/login' element={<ProtectedRoute user={!user} redirect='/'>
+
+          <Route path='/login' element={<ProtectedRoute user={!userExist} redirect='/'>
             <Login />
           </ProtectedRoute>} />
 
@@ -45,6 +66,7 @@ const App = () => {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Suspense>
+      <Toaster position='bottom-center' />
     </Router>
   )
 }
