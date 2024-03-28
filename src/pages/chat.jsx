@@ -12,6 +12,7 @@ import { useChatDetailsQuery, useGetMessagesQuery } from '../redux/api/api';
 import { useInfiniteScrollTop } from '6pp';
 import { useDispatch } from 'react-redux';
 import { setIsFileMenu } from '../redux/reducer/misc';
+import { useEffect } from 'react';
 
 
 const Chat = ({ chatId, user }) => {
@@ -48,6 +49,19 @@ const Chat = ({ chatId, user }) => {
   const members = chatDetails?.data?.chat?.members;
 
 
+  useEffect(()=>{
+
+
+
+   return ()=>{
+      setMessages([]);
+      setMessage('');
+      setPage(1);
+      setOldMessages('');
+    }
+  },[chatId])
+
+
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
@@ -66,9 +80,9 @@ const Chat = ({ chatId, user }) => {
 
 
   const newMessagesHandler = useCallback((data) => {
-    console.log(data);
+    if(data.chatId !== chatId) return;
     setMessages((prev) => [...prev, data.message]);
-  }, []);
+  }, [chatId]);
 
   const eventHandlers = { [NEW_MESSAGE]: newMessagesHandler }
 

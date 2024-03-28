@@ -1,4 +1,4 @@
-import { AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material'
+import { AppBar, Backdrop, Badge, Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material'
 import React, { Suspense, lazy, useState } from 'react'
 import {
   Add as AddIcon, Group as GroupIcon, Logout as LogoutIcon
@@ -11,41 +11,46 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { userNotExists } from '../../redux/reducer/auth';
 import { setIsMobile, setIsNotification, setIsSearch } from '../../redux/reducer/misc';
-const SearchDialog = lazy(()=>import('../specific/Search'));
-const NotificationDialog = lazy(()=>import('../specific/Notifications'));
-const NewGroupDialog = lazy(()=>import('../specific/NewGroup'));
+import { resetNotificationCount } from '../../redux/reducer/chat';
+const SearchDialog = lazy(() => import('../specific/Search'));
+const NotificationDialog = lazy(() => import('../specific/Notifications'));
+const NewGroupDialog = lazy(() => import('../specific/NewGroup'));
 
 const Header = () => {
 
   const navigate = useNavigate();
 
-const {isSearch,isNotification} = useSelector(state=>state.misc);
+  const { isSearch, isNotification } = useSelector(state => state.misc);
+  const { notificationCount } = useSelector(state => state.chat);
 
   const [isNewGroup, setIsNewGroup] = useState(false);
 
   const handleMobile = () => dispatch(setIsMobile(true));
-  
+
   const openSearchDialog = () => dispatch(setIsSearch(true));
-  
+
 
   const openNewGroup = () => {
     console.log('openNewGroup');
     setIsNewGroup(!isNewGroup)
   }
-  const openNotification = () => dispatch(setIsNotification(true))
+  const openNotification = () => {
+    dispatch(resetNotificationCount())
+    dispatch(setIsNotification(true))
+  }
 
   const navigateToGroup = () => navigate('/groups');
 
 
   const dispatch = useDispatch();
 
-  const logoutHandler = async() => {
+  const logoutHandler = async () => {
     try {
-      const {data}=await axios.get(`${server}/user/logout`,{withCredentials:true});
+      const { data } = await axios.get(`${server}/user/logout`, { withCredentials: true });
       toast.success(data.message);
       dispatch(userNotExists())
     } catch (e) {
-        toast.error(e?.response?.data?.message || 'Something Went Wrong')
+      toast.error(e?.response?.data?.message || 'Something Went Wrong')
     }
   }
 
@@ -56,10 +61,10 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
           bgcolor: "#ea7070"
         }} >
           <Toolbar>
-            <Typography  variant='h6' sx={{
-              display: { xs: "none", sm: "block" },cursor:'pointer'
+            <Typography variant='h6' sx={{
+              display: { xs: "none", sm: "block" }, cursor: 'pointer'
             }} fontFamily={'cursive'} >
-             <span onClick={()=>navigate('/')}> WeChat</span>
+              <span onClick={() => navigate('/')}> WeChat</span>
             </Typography>
 
             <Box sx={{
@@ -74,7 +79,7 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
               <IconBtn title={'Search'} icon={<SearchIcon />} onClick={openSearchDialog} />
               <IconBtn title={'New Group'} icon={<AddIcon />} onClick={openNewGroup} />
               <IconBtn title={'Manage Groups'} icon={<GroupIcon />} onClick={navigateToGroup} />
-              <IconBtn title={'Notifications'} icon={<NotificationsIcon />} onClick={openNotification} />
+              <IconBtn title={'Notifications'} value={notificationCount} icon={<NotificationsIcon />} onClick={openNotification} />
               <IconBtn title={'Logout'} icon={<LogoutIcon />} onClick={logoutHandler} />
             </Box>
           </Toolbar>
@@ -83,7 +88,7 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
 
       {
         isSearch && (
-          <Suspense fallback={<Backdrop open/>}>
+          <Suspense fallback={<Backdrop open />}>
             <SearchDialog />
           </Suspense>
         )
@@ -91,7 +96,7 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
 
       {
         isNewGroup && (
-          <Suspense fallback={<Backdrop open/>}>
+          <Suspense fallback={<Backdrop open />}>
             <NewGroupDialog />
           </Suspense>
         )
@@ -99,7 +104,7 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
 
       {
         isNotification && (
-          <Suspense fallback={<Backdrop open/>}>
+          <Suspense fallback={<Backdrop open />}>
             <NotificationDialog />
           </Suspense>
         )
@@ -109,11 +114,11 @@ const {isSearch,isNotification} = useSelector(state=>state.misc);
 }
 
 
-const IconBtn = ({ title, icon, onClick }) => {
+const IconBtn = ({ title, icon, onClick, value }) => {
   return (
     <Tooltip title={title}>
       <IconButton color='inherit' size='large' onClick={onClick}>
-        {icon}
+        {value ? <Badge badgeContent={value} color='error'>{icon}</Badge> :  icon }
       </IconButton>
     </Tooltip>
   )
