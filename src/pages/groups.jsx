@@ -44,10 +44,10 @@ const Groups = () => {
 
   const navigate = useNavigate();
 
-  const errors = [{
-    isError: myGroups?.isError, error: myGroups?.error,
-    isError: groupDetails?.isError, error: groupDetails?.error,
-  }]
+  const errors = [
+    { isError: myGroups?.isError, error: myGroups?.error },
+    { isError: groupDetails?.isError, error: groupDetails?.error, }
+  ]
 
   useErrors(errors);
 
@@ -189,11 +189,11 @@ const Groups = () => {
       }}>
 
         {IconBtns}
-        {myGroups?.data?.groups.length > 0 ? groupDetails?.data?.chat.length > 0 : <Typography p={'2rem'} marginTop={'2rem'} variant='h5' height={'100%'} textAlign={'center'} fontFamily={'cursive'}>Select the Group to manage</Typography> }
+        {myGroups?.data?.groups.length > 0 ? groupDetails?.data?.chat.length > 0 : <Typography p={'2rem'} marginTop={'2rem'} variant='h5' height={'100%'} textAlign={'center'} fontFamily={'cursive'}>Select the Group to manage</Typography>}
         {
           groupName && <>
             {GroupName}
-            <Typography  margin={'2rem'} alignSelf={'flex-center'} variant='h4' fontFamily={'cursive'}>Members</Typography>
+            <Typography margin={'2rem'} alignSelf={'flex-center'} variant='h4' fontFamily={'cursive'}>Members</Typography>
             <Stack maxWidth={'45rem'}
               width={'100%'}
               boxSizing={'border-box'}
