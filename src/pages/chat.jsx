@@ -186,16 +186,16 @@ const Chat = ({ chatId, user }) => {
       }}
         onSubmit={submitHandler}
       >
-        <Stack direction={'row'} height={'100%'} padding={'1rem'} alignItems={'center'} position={'relative'}>
+        <Stack direction={'row'} height={'100%'}  alignItems={'center'} position={'relative'}>
           <IconButton sx={{
             position: 'absolute',
-            left: '1.5rem',
+            left: '0.5rem',
             rotate: '30deg'
           }}
             onClick={handleFileOpen}>
             <AttachFile />
           </IconButton>
-          <InputBox placeholder='Type your message here...' value={message}
+          <InputBox  placeholder='Type your message here...' value={message}
             onChange={messageOnChange}
           />
           <IconButton type='submit' sx={{
