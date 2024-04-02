@@ -9,12 +9,13 @@ import { VisuallyHiddenInput } from '../components/styles/StyledComponents';
 import { server } from '../lib/config';
 import { userExists } from '../redux/reducer/auth';
 import { usernameValidator } from '../utils/validators';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const dispatch = useDispatch();
 
     const [isLogin, setIsLogin] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+
     const name = useInputValidation("");
     const bio = useInputValidation("");
     const username = useInputValidation("", usernameValidator);
@@ -29,6 +30,8 @@ const Login = () => {
     }
 
     const handleSignUp = async (e) => {
+        setIsLoading(true);
+        const toastId = toast.loading("Signing Up...");
         e.preventDefault();
         const formData = new FormData();
         formData.append("avatar", avatar.file);
@@ -46,25 +49,42 @@ const Login = () => {
             }
             );
             console.log(data);
-            dispatch(userExists(true));
-            toast.success(data.message);
-        } catch (e) {
-            toast.error(e?.response?.data?.message || 'Something went Wrong');
+            dispatch(userExists(data.user));
+            toast.success(data.message, {
+                id: toastId,
+              });
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Something Went Wrong", {
+                id: toastId,
+              });
+        } finally {
+            setIsLoading(false);
+            toast.error("Something Went Wrong",{id:toastId});
         }
     }
 
     const handleLogin = async (e) => {
+        setIsLoading(true);
+        const toastId = toast.loading("Logging In...");
         e.preventDefault();
         try {
-            const { data, ...response } = await axios.post(`${server}/user/login`, {
+            const { data, } = await axios.post(`${server}/user/login`, {
                 username: username.value,
                 password: password.value,
             }, config);
             console.log(data);
-            dispatch(userExists(true));
-            toast.success(data.message);
-        } catch (e) {
-            toast.error(e?.response?.data?.message || 'Something went Wrong');
+            dispatch(userExists(data.user));
+            toast.success(data.message, {
+                id: toastId,
+              });
+
+        } catch (error) {
+            console.log(e);
+            toast.error(error?.response?.data?.message || "Something Went Wrong", {
+                id: toastId,
+              });
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -88,9 +108,9 @@ const Login = () => {
                                 value={password.value || ''}  // Initialize with empty string if undefined
                                 onChange={password.changeHandler}
                                 required fullWidth label='Password' type='password' margin='normal' variant='outlined' />
-                            <Button variant='contained' color='primary' type='submit' sx={{ marginTop: '0.5rem' }} fullWidth> Login</Button>
+                            <Button disabled={isLoading} variant='contained' color='primary' type='submit' sx={{ marginTop: '0.5rem' }} fullWidth> Login</Button>
                             <Typography textAlign={'center'} m={'0.5rem'}>OR</Typography>
-                            <Button variant='text' color='secondary' onClick={() => setIsLogin(false)} fullWidth>Sign Up Instead</Button>
+                            <Button disabled={isLoading} variant='text' color='secondary' onClick={() => setIsLogin(false)} fullWidth>Sign Up Instead</Button>
                         </form>
                     </>
                 ) : (
@@ -120,11 +140,11 @@ const Login = () => {
                             <TextField value={bio.value || ''} onChange={bio.changeHandler} size='small' required fullWidth label='Bio' margin='normal' variant='outlined' />
                             <TextField value={username.value || ''} onChange={username.changeHandler} size='small' required fullWidth label='Username' margin='normal' variant='outlined' />
                             {username.error && (<Typography color="error" variant='caption'>{username.error}</Typography>)}
-                            <TextField value={password.value || ''} onChange={password.changeHandler} size='small' required fullWidth label='Password' type='password' margin='normal' variant='outlined' />
+                            <TextField value={password.value || ''} onChange={password.changeHandler} size='small' required fullWidth label='Password'  margin='normal' variant='outlined' />
                             {password.error && (<Typography color="error" variant='caption'>{password.error}</Typography>)}
-                            <Button size='small' variant='contained' color='primary' type='submit' sx={{ marginTop: '0.5rem' }} fullWidth>Sign Up</Button>
+                            <Button disabled={isLoading} size='small' variant='contained' color='primary' type='submit' sx={{ marginTop: '0.5rem' }} fullWidth>Sign Up</Button>
                             <Typography textAlign={'center'} m={'0.7rem'}>OR</Typography>
-                            <Button size='small' variant='text' color='secondary' onClick={() => setIsLogin(!isLogin)} fullWidth>Login Instead</Button>
+                            <Button disabled={isLoading} size='small' variant='text' color='secondary' onClick={() => setIsLogin(!isLogin)} fullWidth>Login Instead</Button>
                         </form>
                     </>
                 )}

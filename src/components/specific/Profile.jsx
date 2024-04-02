@@ -1,8 +1,7 @@
-import { Avatar, Icon, Stack, Typography } from '@mui/material'
-import React, { memo } from 'react'
-import { Face as FaceIcon, AlternateEmail as UserNameIcon, CalendarMonth as CalenderIcon } from '@mui/icons-material'
+import { CalendarMonth as CalenderIcon, Face as FaceIcon, AlternateEmail as UserNameIcon } from '@mui/icons-material'
+import { Avatar, Stack, Typography } from '@mui/material'
 import moment from 'moment'
-import { transformImage } from '../../lib/features'
+import React from 'react'
 
 const Profile = ({ user }) => {
     return (
@@ -14,12 +13,13 @@ const Profile = ({ user }) => {
                 marginBottom: "1rem",
                 border: "5px solid white"
             }}
-            src={transformImage(user?.data?.avatar?.url)}
+            src={user?.data?.avatar?.url || user?.avatar?.url }
              />
-            <ProfileCard heading={"bio"} text={user?.data?.bio} />
-            <ProfileCard heading={"username"} text={user?.data?.username} Icon={<UserNameIcon />} />
-            <ProfileCard heading={"name"} text={user?.data?.name} Icon={<FaceIcon />} />
-            <ProfileCard heading={"joined"} text={moment(user?.data?.createdAt).fromNow()} Icon={<CalenderIcon />} />
+            <ProfileCard heading={"bio"} text={user?.data?.bio  || user?.bio } />
+            <ProfileCard heading={"username"} text={user?.data?.username ||user?.username } Icon={<UserNameIcon />} />
+            <ProfileCard heading={"name"} text={user?.data?.name || user?.name } Icon={<FaceIcon />} />
+            <ProfileCard heading={"joined"} 
+            text={moment(user?.data?.createdAt).fromNow() || moment(user?.createdAt).fromNow()} Icon={<CalenderIcon />} />
         </Stack>
     )
 }

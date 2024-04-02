@@ -51,7 +51,7 @@ const App = () => {
             <Route path='/groups' element={<Groups />} />
           </Route>
 
-          <Route path='/login' element={<ProtectedRoute user={!userExist} redirect='/'>
+          <Route path='/login' element={<ProtectedRoute user={!user} redirect='/'>
             <Login />
           </ProtectedRoute>} />
 

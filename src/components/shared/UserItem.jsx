@@ -6,13 +6,12 @@ import { transformImage } from '../../lib/features';
 const UserItem = ({user,handler,handlerIsLoading,isAdded=false,styling={}}) => {
 
     const {name,_id,avatar}=user;
-
   return (
     <ListItem >
     <Stack 
     direction={'row'} alignItems={'center'} spacing={'1rem'} width={'100%'} {...styling}>
-        <Avatar src={transformImage(avatar)}/>
-        <Typography
+        <Avatar src={typeof avatar === 'object' ? avatar[0] : avatar}/>
+        <Typography fontFamily={'cursive'}
         sx={{
             flexGrow:1,
             display:"-webkit-box",

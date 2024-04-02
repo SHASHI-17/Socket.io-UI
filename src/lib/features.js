@@ -2,8 +2,8 @@ import moment from "moment";
 
 
 const fileFormat = (url = '') => {
-    const fileExt = (url.split(".").pop()).split('?')[0];
-    console.log(fileExt.split('?')[0]);
+    const fileExt =url.split(".").pop();
+
     if (fileExt === 'mp4' || fileExt === 'ogg' || fileExt === 'webm') return "video"
     if (fileExt === 'mp3' || fileExt === 'wav') return "audio"
     if (fileExt === 'png' || fileExt === 'jpg' || fileExt === 'jpeg'
@@ -14,7 +14,7 @@ const fileFormat = (url = '') => {
 
 const transformImage = (url = '', width = 100) => {
 
-    const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`)
+    const newUrl = url?.replace("upload/", `upload/dpr_auto/w_${width}/`)
 
     return newUrl;
 }

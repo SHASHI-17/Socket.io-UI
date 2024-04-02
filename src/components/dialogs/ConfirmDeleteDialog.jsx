@@ -7,8 +7,12 @@ const confirmDeleteDialog = ({ open, handleClose, deletehandler }) => {
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogContent>Are you sure you want to delete this group? </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>No</Button>
-                <Button color='error' onClick={deletehandler}>Yes</Button>
+                <Button style={{
+                        fontFamily:'cursive'
+                    }} onClick={handleClose}>No</Button>
+                <Button style={{
+                        fontFamily:'cursive'
+                    }} color='error' onClick={deletehandler}>Yes</Button>
             </DialogActions>
         </Dialog>
     )

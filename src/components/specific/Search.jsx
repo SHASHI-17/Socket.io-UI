@@ -60,8 +60,8 @@ const Search = () => {
     </Stack>
     <List>
       {
-        users?.map(user => (
-          <UserItem user={user} key={user._id} handler={addFriendHandler}
+        users?.map((user,index) => (
+          <UserItem user={user} key={index} handler={addFriendHandler}
             handlerIsLoading={isLoadingSendFriendRequest} />
         ))
       }

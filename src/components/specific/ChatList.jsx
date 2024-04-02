@@ -6,7 +6,6 @@ const ChatList = ({ w = '100%', chats = [], chatId , onlineUsers = [], newMessag
   chatId: "", count: 0
 }], handleDeleteChat
 }) => {
-
   return (
     <Stack width={w} direction={'column'} overflow={'auto'} height={'100%'}>
       {
@@ -17,7 +16,7 @@ const ChatList = ({ w = '100%', chats = [], chatId , onlineUsers = [], newMessag
           const isOnline = members?.some((member) => onlineUsers.includes(member));
 
           return <ChatItem
-            key={index}
+            key={_id}
             newMessageAlert={newMessageAlert}
             isOnline={isOnline}
             avatar={avatar}

@@ -80,8 +80,12 @@ const NotificationItem = memo(
             xs: "column",
             // sm:"row"
           }}>
-            <Button onClick={() => handler({ _id, accept: true })}>Accept</Button>
-            <Button color='error' onClick={() => handler({ _id, accept: false })}>Reject</Button>
+            <Button style={{
+                        fontFamily:'cursive'
+                    }} onClick={() => handler({ _id, accept: true })}>Accept</Button>
+            <Button style={{
+                        fontFamily:'cursive'
+                    }} color='error' onClick={() => handler({ _id, accept: false })}>Reject</Button>
           </Stack>
         </Stack>
       </ListItem>

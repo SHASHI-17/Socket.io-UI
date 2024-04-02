@@ -9,7 +9,7 @@ const AvatarCard = ({avatar=[],max=4}) => {
                 {
                     avatar.map((i,index)=>(
                         <Avatar 
-                            key={Math.round()*100}
+                            key={index}
                             src={transformImage(i)}
                             alt={`Avatar ${index}`}
                             sx={{

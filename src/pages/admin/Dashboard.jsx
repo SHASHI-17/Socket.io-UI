@@ -1,12 +1,27 @@
+import { useFetchData } from '6pp';
 import { AdminPanelSettings, Group, Message, Notifications, Person } from '@mui/icons-material';
-import { Box, Container, Paper, Stack, Typography } from '@mui/material';
+import { Box, Container, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import AdminLayout from '../../components/layout/AdminLayout';
-import { CurveButton, SearchField } from '../../components/styles/StyledComponents';
 import { DoughNut, LineChart } from '../../components/shared/Charts';
+import { CurveButton, SearchField } from '../../components/styles/StyledComponents';
+import { useErrors } from '../../hooks/hooks';
+import { server } from '../../lib/config';
 
 const Dashboard = () => {
+
+  const { loading, data, error } = useFetchData(
+    `${server}/admin/stats`,
+    "dashboard-stats"
+  );
+
+  const { stats } = data || {};
+  console.log(data);
+
+  useErrors([
+    { isError: error, error }
+  ])
 
   const Appbar = (
     <Paper elevation={3} style={{
@@ -33,30 +48,32 @@ const Dashboard = () => {
     sx: "column", sm: "row"
   }} spacing={'2rem'} justifyContent={'space-between'} alignItems={'center'} margin={'1.3rem 0'}
   >
-    <Widget title={"Users"} value={34} Icon={<Person />} />
-    <Widget title={"Chats"} value={3} Icon={<Group />} />
-    <Widget title={"Messages"} value={425} Icon={<Message />} />
+    <Widget title={"Users"} value={stats?.usersCount} Icon={<Person />} />
+    <Widget title={"Chats"} value={stats?.totalChatsCount} Icon={<Group />} />
+    <Widget title={"Messages"} value={stats?.messagesCount} Icon={<Message />} />
   </Stack>
+
+
 
   return (
     <AdminLayout>
-      <Container component={'main'}>
+      {loading ? <Skeleton height={'100vh'}/> : <Container component={'main'}>
         {
           Appbar
         }
 
         <Stack direction={{
-          xs:"column",
-          lg:"row"
-        }} style={{gap:"2rem"}} flexWrap={'wrap'} justifyContent={'center'} alignItems={{
-          xs:"center",lg:"stretch"
+          xs: "column",
+          lg: "row"
+        }} style={{ gap: "2rem" }} flexWrap={'wrap'} justifyContent={'center'} alignItems={{
+          xs: "center", lg: "stretch"
         }}>
           <Paper elevation={3} sx={{
             padding: '2rem 3.5rem', borderRadius: '1rem',
             width: "100%", maxWidth: "42rem",
           }} >
             <Typography variant='h5'>Last Messages</Typography>
-            <LineChart/>
+            <LineChart value={stats?.messageChart || []} />
           </Paper>
 
           <Paper elevation={3} sx={{
@@ -69,7 +86,7 @@ const Dashboard = () => {
             position: "relative",
             maxWidth: '24rem',
           }}>
-            <DoughNut labels={['Single Chat','Group Chats']} value={[23,66]}/>
+            <DoughNut labels={['Single Chat', 'Group Chats']} value={[stats?.totalChatsCount - stats?.groupsCount || 0, stats?.groupsCount || 0]} />
             <Stack
               position={"absolute"}
               direction={"row"}
@@ -84,27 +101,27 @@ const Dashboard = () => {
           </Paper>
         </Stack>
         {Widgets}
-      </Container>
+      </Container>}
     </AdminLayout>
   )
 }
 
 
 const Widget = ({ title, value, Icon }) => <Paper elevation={3}
-      sx={{
-        padding:'2rem',margin:"2rem 0",borderRadius:"1.5rem",width:"20rem"
-      }}
+  sx={{
+    padding: '2rem', margin: "2rem 0", borderRadius: "1.5rem", width: "20rem"
+  }}
 >
   <Stack alignItems={'center'} spacing={'1rem'}>
     <Typography sx={{
-      color:'rgba(0,0,0,0.7)',
-      borderRadius:'50%',
-      border:"5px solid rgba(0,0,0,0.9)",
-      width:"5rem",
-      height:"5rem",
-      display:"flex",
-      justifyContent:"center",
-      alignItems:"center"
+      color: 'rgba(0,0,0,0.7)',
+      borderRadius: '50%',
+      border: "5px solid rgba(0,0,0,0.9)",
+      width: "5rem",
+      height: "5rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
     }}>{value}</Typography>
     <Stack direction={'row'} spacing={'1rem'} alignItems={'center'}>
       {Icon}
