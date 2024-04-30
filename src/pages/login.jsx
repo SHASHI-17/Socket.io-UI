@@ -59,7 +59,6 @@ const Login = () => {
               });
         } finally {
             setIsLoading(false);
-            toast.error("Something Went Wrong",{id:toastId});
         }
     }
 
